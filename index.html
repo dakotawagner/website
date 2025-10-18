@@ -92,7 +92,9 @@
       }
 
       a {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
         padding: 1.1rem 1.25rem;
         text-decoration: none;
         border-radius: 0.9rem;
@@ -102,6 +104,39 @@
         color: inherit;
         transition: transform 120ms ease, border-color 120ms ease,
           background 120ms ease;
+      }
+
+      .link-icon {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 0.55rem;
+        border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
+        background: color-mix(in srgb, var(--bg) 25%, var(--fg));
+        font-size: 1.2rem;
+        line-height: 1;
+      }
+
+      .link-icon img,
+      .link-icon svg {
+        width: 70%;
+        height: 70%;
+        display: block;
+      }
+
+      .link-icon svg {
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .link-label {
+        font-weight: 500;
+        letter-spacing: -0.01em;
       }
 
       a:hover,
@@ -143,7 +178,21 @@
       <ul>
         <li>
           <a href="https://dakotawagner.substack.com" target="_blank" rel="noopener">
-            substack
+            <span class="link-icon" aria-hidden="true">📖</span>
+            <span class="link-label">substack</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://mingosco.com" target="_blank" rel="noopener">
+            <span class="link-icon">
+              <img
+                src="assets/mingosco.png"
+                alt=""
+                width="34"
+                height="34"
+              />
+            </span>
+            <span class="link-label">mingosco</span>
           </a>
         </li>
       </ul>
