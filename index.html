@@ -91,7 +91,8 @@
         gap: 1rem;
       }
 
-      a {
+      a,
+      .link-trigger {
         display: flex;
         align-items: center;
         gap: 0.85rem;
@@ -104,6 +105,13 @@
         color: inherit;
         transition: transform 120ms ease, border-color 120ms ease,
           background 120ms ease;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      ul li > a,
+      ul li > .link-trigger {
+        width: 100%;
       }
 
       .link-icon {
@@ -139,8 +147,62 @@
         letter-spacing: -0.01em;
       }
 
+      dialog::backdrop {
+        background: color-mix(in srgb, var(--bg) 25%, black);
+      }
+
+      dialog {
+        border: 0;
+        border-radius: 1rem;
+        padding: 2.4rem 2rem;
+        max-width: 22rem;
+        margin: auto;
+        background: color-mix(in srgb, var(--bg) 60%, var(--fg));
+        color: var(--fg);
+        box-shadow: 0 20px 40px color-mix(in srgb, black 40%, transparent);
+        text-align: center;
+      }
+
+      dialog h2 {
+        margin: 0 0 1rem;
+        font-size: 1.5rem;
+        letter-spacing: -0.02em;
+      }
+
+      dialog p {
+        margin: 0 0 1.7rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--fg);
+      }
+
+      .dialog-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
+        border-radius: 999px;
+        padding: 0.65rem 1.3rem;
+        background: color-mix(in srgb, var(--bg) 40%, var(--accent));
+        color: inherit;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        transition: transform 120ms ease, border-color 120ms ease,
+          background 120ms ease;
+      }
+
+      .dialog-close:hover,
+      .dialog-close:focus-visible {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+        outline: none;
+      }
+
       a:hover,
-      a:focus-visible {
+      a:focus-visible,
+      .link-trigger:hover,
+      .link-trigger:focus-visible {
         transform: translateY(-3px);
         border-color: color-mix(in srgb, var(--accent) 40%, transparent);
         background: color-mix(in srgb, var(--bg) 55%, var(--accent));
@@ -195,8 +257,67 @@
             <span class="link-label">mingosco</span>
           </a>
         </li>
+        <li>
+          <a
+            href="https://instagram.com/dakota___wagner"
+            target="_blank"
+            rel="noopener"
+          >
+            <span class="link-icon" aria-hidden="true">📸</span>
+            <span class="link-label">instagram</span>
+          </a>
+        </li>
+        <li>
+          <button class="link-trigger" data-contact-open type="button">
+            <span class="link-icon" aria-hidden="true">✉️</span>
+            <span class="link-label">contact me</span>
+          </button>
+        </li>
       </ul>
       <small>More coming soon.</small>
     </main>
+    <dialog id="contact-dialog" aria-labelledby="contact-dialog-title">
+      <h2 id="contact-dialog-title">Let’s Connect</h2>
+      <p>The quickest way to reach me is via Instagram DM. Thanks!</p>
+      <button type="button" class="dialog-close" data-contact-close>
+        Got it
+      </button>
+    </dialog>
+    <script>
+      const contactButton = document.querySelector("[data-contact-open]");
+      const contactDialog = document.getElementById("contact-dialog");
+      const contactClose = document.querySelector("[data-contact-close]");
+
+      if (contactButton && contactDialog) {
+        contactButton.addEventListener("click", () => {
+          if (contactDialog.showModal) {
+            contactDialog.showModal();
+          } else {
+            contactDialog.setAttribute("open", "");
+          }
+        });
+      }
+
+      if (contactClose && contactDialog) {
+        contactClose.addEventListener("click", () => {
+          if (contactDialog.close) {
+            contactDialog.close();
+          } else {
+            contactDialog.removeAttribute("open");
+          }
+        });
+      }
+
+      if (contactDialog) {
+        contactDialog.addEventListener("cancel", (event) => {
+          event.preventDefault();
+          if (contactDialog.close) {
+            contactDialog.close();
+          } else {
+            contactDialog.removeAttribute("open");
+          }
+        });
+      }
+    </script>
   </body>
 </html>
