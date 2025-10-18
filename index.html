@@ -148,7 +148,9 @@
       }
 
       dialog::backdrop {
-        background: color-mix(in srgb, var(--bg) 25%, black);
+        background: rgba(12, 12, 18, 0.55);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
       }
 
       dialog {
@@ -161,6 +163,9 @@
         color: var(--fg);
         box-shadow: 0 20px 40px color-mix(in srgb, black 40%, transparent);
         text-align: center;
+        opacity: 0;
+        transform: translateY(18px) scale(0.94);
+        pointer-events: none;
       }
 
       dialog h2 {
@@ -197,6 +202,48 @@
         transform: translateY(-2px);
         border-color: color-mix(in srgb, var(--accent) 45%, transparent);
         outline: none;
+      }
+
+      dialog[open] {
+        pointer-events: auto;
+        animation: dialog-fade-in 240ms ease forwards;
+      }
+
+      dialog[open][data-state="closing"] {
+        pointer-events: none;
+        animation: dialog-fade-out 200ms ease forwards;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        dialog,
+        dialog[open],
+        dialog[open][data-state="closing"] {
+          transition-duration: 0ms;
+          transform: none !important;
+          animation-duration: 0ms;
+        }
+      }
+
+      @keyframes dialog-fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(18px) scale(0.94);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes dialog-fade-out {
+        from {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(18px) scale(0.94);
+        }
       }
 
       a:hover,
@@ -287,36 +334,103 @@
       const contactButton = document.querySelector("[data-contact-open]");
       const contactDialog = document.getElementById("contact-dialog");
       const contactClose = document.querySelector("[data-contact-close]");
+      const transitionFallbackMs = 320;
+      let closeTimeoutId = null;
+      let isClosing = false;
+      const resetDialogAnimation = () => {
+        if (!contactDialog) return;
+        contactDialog.style.animation = "none";
+        // Trigger reflow to allow animation to restart
+        void contactDialog.offsetWidth;
+        contactDialog.style.animation = "";
+      };
+
+      const finishDialogClose = () => {
+        if (!contactDialog) return;
+        contactDialog.removeAttribute("data-state");
+        window.clearTimeout(closeTimeoutId);
+        closeTimeoutId = null;
+
+        if (typeof contactDialog.close === "function") {
+          try {
+            contactDialog.close();
+          } catch (error) {
+            contactDialog.removeAttribute("open");
+          }
+        } else {
+          contactDialog.removeAttribute("open");
+        }
+
+        isClosing = false;
+
+        if (contactButton) {
+          contactButton.focus();
+        }
+      };
+
+      const openDialog = () => {
+        if (!contactDialog) return;
+
+        if (isClosing) {
+          window.clearTimeout(closeTimeoutId);
+          contactDialog.removeAttribute("data-state");
+          isClosing = false;
+        }
+
+        if (typeof contactDialog.showModal === "function") {
+          if (!contactDialog.open) {
+            contactDialog.showModal();
+          }
+        } else if (!contactDialog.hasAttribute("open")) {
+          contactDialog.setAttribute("open", "");
+        }
+
+        contactDialog.removeAttribute("data-state");
+        resetDialogAnimation();
+      };
+
+      const closeDialog = () => {
+        if (!contactDialog || isClosing || !contactDialog.open) {
+          return;
+        }
+
+        isClosing = true;
+        resetDialogAnimation();
+        contactDialog.setAttribute("data-state", "closing");
+
+        closeTimeoutId = window.setTimeout(() => {
+          finishDialogClose();
+        }, transitionFallbackMs);
+      };
 
       if (contactButton && contactDialog) {
-        contactButton.addEventListener("click", () => {
-          if (contactDialog.showModal) {
-            contactDialog.showModal();
-          } else {
-            contactDialog.setAttribute("open", "");
-          }
-        });
+        contactButton.addEventListener("click", openDialog);
       }
 
       if (contactClose && contactDialog) {
-        contactClose.addEventListener("click", () => {
-          if (contactDialog.close) {
-            contactDialog.close();
-          } else {
-            contactDialog.removeAttribute("open");
-          }
-        });
+        contactClose.addEventListener("click", closeDialog);
       }
 
       if (contactDialog) {
         contactDialog.addEventListener("cancel", (event) => {
           event.preventDefault();
-          if (contactDialog.close) {
-            contactDialog.close();
-          } else {
-            contactDialog.removeAttribute("open");
-          }
+          closeDialog();
         });
+
+        contactDialog.addEventListener(
+          "animationend",
+          (event) => {
+            if (
+              event.animationName === "dialog-fade-out" &&
+              contactDialog.dataset.state === "closing"
+            ) {
+              finishDialogClose();
+            } else if (event.animationName === "dialog-fade-in") {
+              contactDialog.removeAttribute("data-state");
+            }
+          },
+          { passive: true }
+        );
       }
     </script>
   </body>
