@@ -54,6 +54,22 @@
         text-align: center;
       }
 
+      .logo {
+        width: clamp(80px, 18vw, 110px);
+        margin: 0 auto 1.5rem;
+      }
+
+      .logo svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
       h1 {
         margin: 0;
         font-size: clamp(2.5rem, 7vw, 3.5rem);
@@ -108,6 +124,19 @@
   <body>
     <main>
       <header>
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 64 40">
+            <path
+              d="M4 36L22 10l8 12 8-16 22 30"
+            />
+            <path
+              d="M2 36h60"
+            />
+            <path
+              d="M30 16l4 6"
+            />
+          </svg>
+        </div>
         <h1>dakotawagner</h1>
         <p>Links and projects I care about.</p>
       </header>
@@ -122,4 +151,3 @@
     </main>
   </body>
 </html>
-
