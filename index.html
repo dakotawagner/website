@@ -12,18 +12,32 @@
     <style>
       :root {
         color-scheme: light dark;
-        --bg: #0b0b0d;
-        --fg: #f0f0f3;
+        --bg: radial-gradient(120% 120% at 10% 10%, #131a33 0%, #090a11 48%);
+        --fg: #f6f7fb;
         --accent: #4c8bf5;
-        --muted: #8a8fa3;
+        --muted: rgba(246, 247, 251, 0.7);
+        --glass-bg: rgba(32, 36, 58, 0.65);
+        --glass-highlight: rgba(122, 142, 255, 0.25);
+        --glass-border: rgba(163, 180, 255, 0.22);
+        --overlay-backdrop: rgba(8, 10, 20, 0.5);
+        --overlay-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+        --icon-shadow: 0 18px 28px rgba(0, 0, 0, 0.36);
+        --icon-label: rgba(246, 247, 251, 0.86);
       }
 
       @media (prefers-color-scheme: light) {
         :root {
-          --bg: #f5f6fa;
-          --fg: #1f2430;
+          --bg: radial-gradient(120% 120% at 10% 10%, #fdf4ff 0%, #dbe7ff 52%);
+          --fg: #1b2240;
           --accent: #3056d3;
-          --muted: #5c6274;
+          --muted: rgba(27, 34, 64, 0.7);
+          --glass-bg: rgba(255, 255, 255, 0.82);
+          --glass-highlight: rgba(255, 255, 255, 0.55);
+          --glass-border: rgba(60, 80, 160, 0.22);
+          --overlay-backdrop: rgba(223, 226, 255, 0.6);
+          --overlay-shadow: 0 14px 34px rgba(48, 62, 128, 0.22);
+          --icon-shadow: 0 18px 28px rgba(48, 62, 128, 0.18);
+          --icon-label: rgba(27, 34, 64, 0.85);
         }
       }
 
@@ -36,160 +50,347 @@
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
         background: var(--bg);
         color: var(--fg);
-        padding: 2.5rem 1.5rem;
+        padding: clamp(2.5rem, 5vw, 4rem) 1.5rem;
       }
 
-      main {
-        width: min(32rem, 100%);
+      .phone {
+        width: min(420px, 100%);
+        min-height: 760px;
+        padding: clamp(1.4rem, 3vw, 1.8rem);
+        border-radius: clamp(36px, 6vw, 44px);
+        background: color-mix(in srgb, var(--glass-bg) 70%, transparent 30%);
+        border: 1px solid color-mix(in srgb, var(--glass-border) 65%, transparent);
+        box-shadow: 0 60px 120px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(40px) saturate(140%);
+        -webkit-backdrop-filter: blur(40px) saturate(140%);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.5rem, 3vw, 2rem);
+        position: relative;
+        overflow: hidden;
       }
 
-      header {
-        margin-bottom: 2rem;
-        text-align: center;
+      .phone::after {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: clamp(28px, 4vw, 36px);
+        border: 1px solid color-mix(in srgb, var(--glass-border) 40%, transparent);
+        pointer-events: none;
       }
 
-      .logo {
-        width: clamp(80px, 18vw, 110px);
-        margin: 0 auto 1.5rem;
+      .dynamic-island {
+        position: relative;
+        width: 128px;
+        height: 38px;
+        border-radius: 19px;
+        background: rgba(0, 0, 0, 0.55);
+        margin: 0 auto;
+        display: grid;
+        place-items: center;
+        box-shadow: inset 0 -1px 4px rgba(255, 255, 255, 0.12);
       }
 
-      .logo svg {
-        width: 100%;
+      .dynamic-pill {
+        width: 70%;
+        height: 46%;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.35rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+
+      .status-time {
+        font-family: "SF Pro Display", "Inter", -apple-system, sans-serif;
+        font-size: 0.85rem;
+      }
+
+      .status-signal {
+        display: grid;
+        grid-auto-flow: column;
+        gap: 0.25rem;
+        align-items: end;
+      }
+
+      .status-signal span {
+        width: 0.3rem;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0.65;
+      }
+
+      .status-signal span:nth-child(1) {
+        height: 0.35rem;
+      }
+      .status-signal span:nth-child(2) {
+        height: 0.55rem;
+      }
+      .status-signal span:nth-child(3) {
+        height: 0.75rem;
+      }
+      .status-signal span:nth-child(4) {
+        height: 0.95rem;
+      }
+
+      .home-screen {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.6rem, 3vw, 2.2rem);
+        flex: 1;
+      }
+
+      .hero-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-radius: 24px;
+        padding: 1.25rem 1.4rem;
+        background: color-mix(in srgb, var(--glass-bg) 75%, transparent 25%);
+        border: 1px solid color-mix(in srgb, var(--glass-border) 55%, transparent);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      }
+
+      .hero-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), transparent);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .hero-icon svg {
+        width: 70%;
         height: auto;
-        display: block;
         stroke: currentColor;
-        fill: none;
         stroke-width: 2;
+        fill: none;
         stroke-linecap: round;
         stroke-linejoin: round;
       }
 
       h1 {
         margin: 0;
-        font-size: clamp(2.5rem, 7vw, 3.5rem);
+        font-size: 1.6rem;
         font-weight: 600;
         letter-spacing: -0.04em;
+        text-transform: lowercase;
       }
 
       p {
-        margin: 0.75rem 0 0;
-        font-size: 0.95rem;
+        margin: 0.35rem 0 0;
         color: var(--muted);
+        font-size: 0.92rem;
       }
 
-      ul {
+      .icon-grid {
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 1rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1.4rem 1.1rem;
+        justify-items: center;
+        align-items: start;
       }
 
-      a,
-      .link-trigger {
+      .app-icon {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 0.85rem;
-        padding: 1.1rem 1.25rem;
-        text-decoration: none;
-        border-radius: 0.9rem;
-        border: 1px solid color-mix(in srgb, var(--fg) 15%, transparent);
-        background: color-mix(in srgb, var(--bg) 70%, var(--fg));
-        backdrop-filter: blur(12px);
+        gap: 0.55rem;
+        background: none;
+        border: 0;
         color: inherit;
-        transition: transform 120ms ease, border-color 120ms ease,
-          background 120ms ease;
         font: inherit;
+        text-decoration: none;
         cursor: pointer;
+        padding: 0;
       }
 
-      ul li > a,
-      ul li > .link-trigger {
-        width: 100%;
+      .app-icon:focus-visible {
+        outline: none;
       }
 
-      .link-icon {
-        width: 34px;
-        height: 34px;
+      .app-icon:focus-visible .icon-shell {
+        outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+        outline-offset: 3px;
+      }
+
+      .icon-shell {
+        width: clamp(72px, 17vw, 82px);
+        aspect-ratio: 1;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.08);
         display: grid;
         place-items: center;
-        flex-shrink: 0;
-        border-radius: 0.55rem;
-        border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
-        background: color-mix(in srgb, var(--bg) 25%, var(--fg));
-        font-size: 1.2rem;
-        line-height: 1;
+        position: relative;
+        box-shadow: var(--icon-shadow);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        overflow: hidden;
       }
 
-      .link-icon img,
-      .link-icon svg {
-        width: 70%;
-        height: 70%;
-        display: block;
+      .icon-shell img {
+        width: 74%;
+        height: 74%;
+        object-fit: cover;
+        border-radius: 19px;
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.22));
       }
 
-      .link-icon svg {
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
+      .app-glyph {
+        font-size: 1.8rem;
+        font-weight: 600;
+        letter-spacing: -0.04em;
+        color: rgba(255, 255, 255, 0.94);
       }
 
-      .link-label {
+      .app-icon[data-app="substack"] .icon-shell {
+        background: linear-gradient(145deg, #ffb28a 0%, #e8652b 70%);
+        border-color: rgba(255, 188, 136, 0.45);
+      }
+
+      .app-icon[data-app="substack"] .app-glyph {
+        font-size: 1.7rem;
+        text-shadow: 0 4px 14px rgba(117, 37, 10, 0.36);
+      }
+
+      .app-icon[data-app="instagram"] .icon-shell {
+        background: radial-gradient(circle at 30% 30%, #ffdd55 0%, #ff543e 45%, #d142ff 78%);
+        border-color: rgba(255, 221, 85, 0.45);
+      }
+
+      .app-icon[data-app="instagram"] .app-glyph {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-shadow: 0 4px 14px rgba(0, 0, 0, 0.38);
+      }
+
+      .app-icon.app-icon--action .icon-shell {
+        background: linear-gradient(150deg, color-mix(in srgb, var(--accent) 90%, white 10%), rgba(40, 96, 255, 0.55));
+        border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+      }
+
+      .app-icon.app-icon--action .app-glyph {
+        font-size: 1.4rem;
+        text-shadow: 0 6px 12px rgba(0, 0, 0, 0.32);
+      }
+
+      .icon-label {
+        font-size: 0.78rem;
         font-weight: 500;
         letter-spacing: -0.01em;
+        color: var(--icon-label);
       }
 
-      dialog::backdrop {
-        background: rgba(12, 12, 18, 0.55);
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
+      .home-indicator {
+        width: 38%;
+        height: 5px;
+        margin: 0 auto clamp(0.6rem, 2vw, 1rem);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.45);
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        display: block;
+        background: var(--overlay-backdrop);
+        backdrop-filter: blur(22px) saturate(135%);
+        -webkit-backdrop-filter: blur(22px) saturate(135%);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 240ms ease;
+        z-index: 10;
+        cursor: pointer;
+        appearance: none;
+      }
+
+      .modal-overlay[data-visible="true"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-overlay:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+        outline-offset: 4px;
       }
 
       dialog {
         border: 0;
-        border-radius: 1rem;
-        padding: 2.4rem 2rem;
-        max-width: 22rem;
+        border-radius: 24px;
+        padding: 2.2rem 2.1rem;
+        max-width: 320px;
         margin: auto;
-        background: color-mix(in srgb, var(--bg) 60%, var(--fg));
+        background: linear-gradient(
+          160deg,
+          color-mix(in srgb, var(--glass-highlight) 60%, transparent) 0%,
+          rgba(12, 16, 28, 0.45) 100%
+        );
+        background-color: color-mix(in srgb, var(--glass-bg) 75%, transparent 25%);
+        backdrop-filter: blur(28px) saturate(140%);
+        -webkit-backdrop-filter: blur(28px) saturate(140%);
         color: var(--fg);
-        box-shadow: 0 20px 40px color-mix(in srgb, black 40%, transparent);
+        box-shadow: var(--overlay-shadow);
         text-align: center;
         opacity: 0;
-        transform: translateY(18px) scale(0.94);
+        transform: translateY(22px) scale(0.94);
         pointer-events: none;
+        border: 1px solid color-mix(in srgb, var(--glass-border) 60%, transparent);
+        z-index: 20;
       }
 
       dialog h2 {
         margin: 0 0 1rem;
-        font-size: 1.5rem;
-        letter-spacing: -0.02em;
+        font-size: 1.45rem;
+        letter-spacing: -0.03em;
+        text-transform: lowercase;
       }
 
       dialog p {
-        margin: 0 0 1.7rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: var(--fg);
+        margin: 0 0 1.6rem;
+        font-size: 0.96rem;
+        line-height: 1.55;
+        color: var(--muted);
       }
 
       .dialog-close {
         display: inline-flex;
         align-items: center;
         gap: 0.4rem;
-        border: 1px solid color-mix(in srgb, var(--fg) 25%, transparent);
+        border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
         border-radius: 999px;
-        padding: 0.65rem 1.3rem;
-        background: color-mix(in srgb, var(--bg) 40%, var(--accent));
-        color: inherit;
+        padding: 0.65rem 1.5rem;
+        background: linear-gradient(
+          150deg,
+          color-mix(in srgb, var(--accent) 80%, white 15%) 0%,
+          color-mix(in srgb, var(--accent) 65%, black 10%) 100%
+        );
+        color: #fdfdff;
         font-weight: 500;
         letter-spacing: -0.01em;
         cursor: pointer;
@@ -200,8 +401,24 @@
       .dialog-close:hover,
       .dialog-close:focus-visible {
         transform: translateY(-2px);
-        border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+        border-color: color-mix(in srgb, var(--accent) 65%, transparent);
         outline: none;
+      }
+
+      .dialog-logo {
+        width: 72px;
+        margin: 0 auto 1.3rem;
+      }
+
+      .dialog-logo svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
 
       dialog[open] {
@@ -221,6 +438,12 @@
           transition-duration: 0ms;
           transform: none !important;
           animation-duration: 0ms;
+        }
+        .modal-overlay {
+          transition-duration: 0ms;
+        }
+        .phone {
+          transition-duration: 0ms;
         }
       }
 
@@ -245,98 +468,154 @@
           transform: translateY(18px) scale(0.94);
         }
       }
-
-      a:hover,
-      a:focus-visible,
-      .link-trigger:hover,
-      .link-trigger:focus-visible {
-        transform: translateY(-3px);
-        border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-        background: color-mix(in srgb, var(--bg) 55%, var(--accent));
-        outline: none;
-      }
-
-      small {
-        display: block;
-        margin-top: 3rem;
-        color: var(--muted);
-        text-align: center;
-        font-size: 0.8rem;
-      }
     </style>
   </head>
   <body>
-    <main>
-      <header>
-        <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 64 40">
-            <path
-              d="M4 36L22 10l8 12 8-16 22 30"
-            />
-            <path
-              d="M2 36h60"
-            />
-            <path
-              d="M30 16l4 6"
-            />
-          </svg>
+    <div class="phone">
+      <div class="dynamic-island" aria-hidden="true">
+        <span class="dynamic-pill"></span>
+      </div>
+      <div class="status-row" aria-hidden="true">
+        <span class="status-time">9:41</span>
+        <div class="status-signal">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-        <h1>dakotawagner</h1>
-        <p>Links and projects I care about.</p>
-      </header>
-      <ul>
-        <li>
-          <a href="https://dakotawagner.substack.com" target="_blank" rel="noopener">
-            <span class="link-icon" aria-hidden="true">📖</span>
-            <span class="link-label">substack</span>
-          </a>
-        </li>
-        <li>
-          <a href="https://mingosco.com" target="_blank" rel="noopener">
-            <span class="link-icon">
-              <img
-                src="assets/mingosco.png"
-                alt=""
-                width="34"
-                height="34"
-              />
-            </span>
-            <span class="link-label">mingosco</span>
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://instagram.com/dakota___wagner"
-            target="_blank"
-            rel="noopener"
-          >
-            <span class="link-icon" aria-hidden="true">📸</span>
-            <span class="link-label">instagram</span>
-          </a>
-        </li>
-        <li>
-          <button class="link-trigger" data-contact-open type="button">
-            <span class="link-icon" aria-hidden="true">✉️</span>
-            <span class="link-label">contact me</span>
-          </button>
-        </li>
-      </ul>
-      <small>More coming soon.</small>
-    </main>
+      </div>
+      <main class="home-screen" aria-label="dakotawagner home screen">
+        <section class="hero-card">
+          <div class="hero-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 40">
+              <path d="M4 36L22 10l8 12 8-16 22 30" />
+              <path d="M2 36h60" />
+              <path d="M30 16l4 6" />
+            </svg>
+          </div>
+          <div class="hero-text">
+            <h1>dakotawagner</h1>
+            <p>links and projects i care about.</p>
+          </div>
+        </section>
+        <ul class="icon-grid" aria-label="app shortcuts">
+          <li>
+            <a
+              class="app-icon"
+              data-app="substack"
+              href="https://dakotawagner.substack.com"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="icon-shell" aria-hidden="true">
+                <span class="app-glyph">S</span>
+              </span>
+              <span class="icon-label">substack</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="app-icon"
+              data-app="mingosco"
+              href="https://mingosco.com"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="icon-shell" aria-hidden="true">
+                <img
+                  src="assets/mingosco.png"
+                  alt=""
+                  width="56"
+                  height="56"
+                  loading="lazy"
+                />
+              </span>
+              <span class="icon-label">mingosco</span>
+            </a>
+          </li>
+          <li>
+            <a
+              class="app-icon"
+              data-app="instagram"
+              href="https://instagram.com/dakota___wagner"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="icon-shell" aria-hidden="true">
+                <span class="app-glyph">◎</span>
+              </span>
+              <span class="icon-label">instagram</span>
+            </a>
+          </li>
+          <li>
+            <button
+              class="app-icon app-icon--action"
+              data-contact-open
+              type="button"
+            >
+              <span class="icon-shell" aria-hidden="true">
+                <span class="app-glyph">✦</span>
+              </span>
+              <span class="icon-label">contact</span>
+            </button>
+          </li>
+        </ul>
+      </main>
+      <div class="home-indicator" aria-hidden="true"></div>
+    </div>
     <dialog id="contact-dialog" aria-labelledby="contact-dialog-title">
-      <h2 id="contact-dialog-title">Let’s Connect</h2>
-      <p>The quickest way to reach me is via Instagram DM. Thanks!</p>
+      <div class="dialog-logo" aria-hidden="true">
+        <svg viewBox="0 0 64 40">
+          <path d="M4 36L22 10l8 12 8-16 22 30" />
+          <path d="M2 36h60" />
+          <path d="M30 16l4 6" />
+        </svg>
+      </div>
+      <h2 id="contact-dialog-title">let’s connect</h2>
+      <p>the quickest way to reach me is via instagram dm. thanks!</p>
       <button type="button" class="dialog-close" data-contact-close>
-        Got it
+        got it
       </button>
     </dialog>
+    <button
+      type="button"
+      class="modal-overlay"
+      id="contact-overlay"
+      aria-hidden="true"
+      aria-label="close contact dialog"
+      tabindex="-1"
+      hidden
+    ></button>
     <script>
       const contactButton = document.querySelector("[data-contact-open]");
       const contactDialog = document.getElementById("contact-dialog");
       const contactClose = document.querySelector("[data-contact-close]");
+      const contactOverlay = document.getElementById("contact-overlay");
       const transitionFallbackMs = 320;
+      const overlayTransitionMs = 240;
       let closeTimeoutId = null;
+      let overlayTimeoutId = null;
       let isClosing = false;
+
+      const showOverlay = () => {
+        if (!contactOverlay) return;
+        window.clearTimeout(overlayTimeoutId);
+        contactOverlay.hidden = false;
+        contactOverlay.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => {
+          contactOverlay.dataset.visible = "true";
+        });
+      };
+
+      const hideOverlay = () => {
+        if (!contactOverlay) return;
+        contactOverlay.dataset.visible = "false";
+        overlayTimeoutId = window.setTimeout(() => {
+          contactOverlay.hidden = true;
+          contactOverlay.setAttribute("aria-hidden", "true");
+          contactOverlay.removeAttribute("data-visible");
+        }, overlayTransitionMs);
+      };
       const resetDialogAnimation = () => {
         if (!contactDialog) return;
         contactDialog.style.animation = "none";
@@ -362,6 +641,7 @@
         }
 
         isClosing = false;
+        hideOverlay();
 
         if (contactButton) {
           contactButton.focus();
@@ -387,6 +667,7 @@
 
         contactDialog.removeAttribute("data-state");
         resetDialogAnimation();
+        showOverlay();
       };
 
       const closeDialog = () => {
@@ -405,6 +686,10 @@
 
       if (contactButton && contactDialog) {
         contactButton.addEventListener("click", openDialog);
+      }
+
+      if (contactOverlay) {
+        contactOverlay.addEventListener("click", closeDialog);
       }
 
       if (contactClose && contactDialog) {
