@@ -591,11 +591,35 @@
       const contactDialog = document.getElementById("contact-dialog");
       const contactClose = document.querySelector("[data-contact-close]");
       const contactOverlay = document.getElementById("contact-overlay");
+      const statusTimeEl = document.querySelector(".status-time");
       const transitionFallbackMs = 320;
       const overlayTransitionMs = 240;
       let closeTimeoutId = null;
       let overlayTimeoutId = null;
       let isClosing = false;
+      let statusTimeTimeoutId = null;
+
+      const updateStatusTime = () => {
+        if (!statusTimeEl) return;
+        const now = new Date();
+        const formatted = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        statusTimeEl.textContent = formatted;
+      };
+
+      const scheduleStatusTimeUpdate = () => {
+        if (!statusTimeEl) return;
+        window.clearTimeout(statusTimeTimeoutId);
+        updateStatusTime();
+        const now = new Date();
+        const msUntilNextMinute = (60 - now.getSeconds()) * 1000;
+        statusTimeTimeoutId = window.setTimeout(
+          scheduleStatusTimeUpdate,
+          msUntilNextMinute
+        );
+      };
 
       const showOverlay = () => {
         if (!contactOverlay) return;
@@ -717,6 +741,8 @@
           { passive: true }
         );
       }
+
+      scheduleStatusTimeUpdate();
     </script>
   </body>
 </html>
