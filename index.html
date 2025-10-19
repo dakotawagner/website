@@ -23,6 +23,12 @@
         --overlay-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
         --icon-shadow: 0 18px 28px rgba(0, 0, 0, 0.36);
         --icon-label: rgba(246, 247, 251, 0.86);
+        --status-color: rgba(255, 255, 255, 0.82);
+        --indicator-inactive: rgba(255, 255, 255, 0.24);
+        --indicator-active: rgba(255, 255, 255, 0.86);
+        --home-indicator-color: rgba(255, 255, 255, 0.45);
+        --modal-gradient-start: color-mix(in srgb, var(--glass-highlight) 60%, transparent);
+        --modal-gradient-end: rgba(12, 16, 28, 0.45);
       }
 
       @media (prefers-color-scheme: light) {
@@ -38,6 +44,12 @@
           --overlay-shadow: 0 14px 34px rgba(48, 62, 128, 0.22);
           --icon-shadow: 0 18px 28px rgba(48, 62, 128, 0.18);
           --icon-label: rgba(27, 34, 64, 0.85);
+          --status-color: rgba(27, 34, 64, 0.78);
+          --indicator-inactive: rgba(27, 34, 64, 0.26);
+          --indicator-active: rgba(27, 34, 64, 0.65);
+          --home-indicator-color: rgba(27, 34, 64, 0.28);
+          --modal-gradient-start: color-mix(in srgb, rgba(255, 255, 255, 0.8) 65%, transparent);
+          --modal-gradient-end: rgba(255, 255, 255, 0.9);
         }
       }
 
@@ -110,7 +122,7 @@
         justify-content: space-between;
         align-items: center;
         padding: 0 0.35rem;
-        color: rgba(255, 255, 255, 0.8);
+        color: var(--status-color);
         font-weight: 600;
         letter-spacing: 0.04em;
         font-size: 0.85rem;
@@ -486,14 +498,14 @@
         height: 8px;
         border-radius: 50%;
         border: 0;
-        background: rgba(255, 255, 255, 0.28);
+        background: var(--indicator-inactive);
         transition: transform 140ms ease, background 140ms ease;
         cursor: pointer;
         padding: 0;
       }
 
       .page-indicators button[data-active="true"] {
-        background: rgba(255, 255, 255, 0.9);
+        background: var(--indicator-active);
         transform: scale(1.35);
       }
 
@@ -502,7 +514,7 @@
         height: 5px;
         margin: 0 auto clamp(0.6rem, 2vw, 1rem);
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.45);
+        background: var(--home-indicator-color);
       }
 
       .modal-overlay {
@@ -541,8 +553,8 @@
         margin: auto;
         background: linear-gradient(
           160deg,
-          color-mix(in srgb, var(--glass-highlight) 60%, transparent) 0%,
-          rgba(12, 16, 28, 0.45) 100%
+          var(--modal-gradient-start) 0%,
+          var(--modal-gradient-end) 100%
         );
         background-color: color-mix(in srgb, var(--glass-bg) 75%, transparent 25%);
         backdrop-filter: blur(28px) saturate(140%);
